@@ -1,0 +1,76 @@
+openapi: 3.0.0
+info:
+  title: Resume Processing API
+  version: 1.0.0
+  description: API for processing resumes and calculating similarity scores.
+servers:
+  - url: https://rbm0.azurewebsites.net
+paths:
+  /process-resumes:
+    post:
+      summary: Process resumes and calculate similarity scores.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                context:
+                  type: string
+                  description: The context for matching resumes.
+                noOfMatches:
+                  type: integer
+                  description: The number of matching resumes to return.
+                inputPath:
+                  type: string
+                  description: The path to input resumes.
+              required:
+                - context
+                - noOfMatches
+                - inputPath
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: The status of the response.
+                  count:
+                    type: integer
+                    description: The number of top matches returned.
+                  metadata:
+                    type: object
+                    properties:
+                      confidenceScore:
+                        type: number
+                        description: The confidence score of the top match.
+                  results:
+                    type: array
+                    description: Array of top matching resumes.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: The ID of the resume.
+                        score:
+                          type: number
+                          description: The similarity score of the resume.
+                        path:
+                          type: string
+                          description: The path to the resume.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Description of the error that occurred.
